@@ -1,11 +1,10 @@
 'use client'
+import React from 'react'
 import ComponentContainerCard from '@/components/ComponentContainerCard'
 import { Button } from 'react-bootstrap'
-import { withSwal } from 'react-sweetalert2'
+import Swal from 'sweetalert2'
 
-const AllSweetAlerts = withSwal((props: any) => {
-  const { swal } = props
-
+const AllSweetAlerts = () => {
   return (
     <>
       <ComponentContainerCard id="basic" title="Basic" titleClass="mb-3">
@@ -13,7 +12,7 @@ const AllSweetAlerts = withSwal((props: any) => {
           variant="primary"
           type="button"
           onClick={() =>
-            swal.fire({
+            Swal.fire({
               title: 'Any fool can use a computer',
               customClass: {
                 confirmButton: `btn btn-primary w-xs mt-2`,
@@ -29,7 +28,7 @@ const AllSweetAlerts = withSwal((props: any) => {
           variant="primary"
           type="button"
           onClick={() =>
-            swal.fire({
+            Swal.fire({
               title: 'The Internet?',
               text: 'That thing is still around?',
               icon: 'question',
@@ -47,7 +46,7 @@ const AllSweetAlerts = withSwal((props: any) => {
           <Button
             variant="success"
             onClick={() =>
-              swal.fire({
+              Swal.fire({
                 title: 'Good job!',
                 text: 'You clicked the button!',
                 icon: 'success',
@@ -56,7 +55,6 @@ const AllSweetAlerts = withSwal((props: any) => {
                   confirmButton: `btn btn-primary w-xs mt-2`,
                   cancelButton: 'btn btn-danger w-xs mt-2',
                 },
-
                 buttonsStyling: false,
                 showCloseButton: false,
               })
@@ -66,7 +64,7 @@ const AllSweetAlerts = withSwal((props: any) => {
           <Button
             variant="warning"
             onClick={() =>
-              swal.fire({
+              Swal.fire({
                 title: 'Oops...',
                 text: 'Something went wrong!',
                 icon: 'warning',
@@ -83,7 +81,7 @@ const AllSweetAlerts = withSwal((props: any) => {
           <Button
             variant="info"
             onClick={() =>
-              swal.fire({
+              Swal.fire({
                 title: 'Oops...',
                 text: 'Something went wrong!',
                 icon: 'info',
@@ -100,7 +98,7 @@ const AllSweetAlerts = withSwal((props: any) => {
           <Button
             variant="danger"
             onClick={() =>
-              swal.fire({
+              Swal.fire({
                 title: 'Oops...',
                 text: 'Something went wrong!',
                 icon: 'error',
@@ -121,7 +119,7 @@ const AllSweetAlerts = withSwal((props: any) => {
         <Button
           variant="primary"
           onClick={() =>
-            swal.fire({
+            Swal.fire({
               imageUrl: 'https://placeholder.pics/svg/300x1500',
               imageHeight: 1500,
               imageAlt: 'A tall image',
@@ -141,53 +139,48 @@ const AllSweetAlerts = withSwal((props: any) => {
           variant="primary"
           type="button"
           onClick={() =>
-            swal
-              .fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                customClass: {
-                  confirmButton: `btn btn-primary w-xs mt-2`,
-                  cancelButton: 'btn btn-danger w-xs mt-2',
-                },
-                buttonsStyling: false,
-                showCloseButton: false,
-              })
-              .then(function (result: any) {
-                if (result.value) {
-                  swal.fire({
-                    title: 'Deleted!',
-                    text: 'Your file has been deleted.',
-                    icon: 'success',
-                    customClass: {
-                      confirmButton: `btn btn-primary w-xs mt-2`,
-                    },
-                    buttonsStyling: false,
-                  })
-                } else if (
-                  // Read more about handling dismissals
-                  result.dismiss === swal.DismissReason.cancel
-                ) {
-                  swal.fire({
-                    title: 'Cancelled',
-                    text: 'Your imaginary file is safe :)',
-                    icon: 'error',
-                    customClass: {
-                      confirmButton: `btn btn-primary mt-2`,
-                    },
-                    buttonsStyling: false,
-                  })
-                }
-              })
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, delete it!',
+              cancelButtonText: 'No, cancel!',
+              customClass: {
+                confirmButton: `btn btn-primary w-xs mt-2`,
+                cancelButton: 'btn btn-danger w-xs mt-2',
+              },
+              buttonsStyling: false,
+              showCloseButton: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.fire({
+                  title: 'Deleted!',
+                  text: 'Your file has been deleted.',
+                  icon: 'success',
+                  customClass: {
+                    confirmButton: `btn btn-primary w-xs mt-2`,
+                  },
+                  buttonsStyling: false,
+                })
+              } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire({
+                  title: 'Cancelled',
+                  text: 'Your imaginary file is safe :)',
+                  icon: 'error',
+                  customClass: {
+                    confirmButton: `btn btn-primary mt-2`,
+                  },
+                  buttonsStyling: false,
+                })
+              }
+            })
           }>
           Click me
         </Button>
       </ComponentContainerCard>
     </>
   )
-})
+}
 
 export default AllSweetAlerts
