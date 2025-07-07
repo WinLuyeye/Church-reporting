@@ -15,11 +15,12 @@ const figtree = Figtree({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Lahomes Nextjs - Real Estate Management Admin Template',
-    default: DEFAULT_PAGE_TITLE,
+    template: '%s | Church Reporting - Tableau de Bord Administratif pour Églises',
+    default: 'Church Reporting | Tableau de Bord Administratif Réactif',
   },
-  description: 'A fully responsive premium admin dashboard template, Real Estate Management Admin Template',
+  description: 'Un tableau de bord administratif premium et entièrement réactif, conçu pour la gestion des activités d’église : membres, finances, événements et rapports.',
 }
+
 
 const splashScreenStyles = `
 #splash-screen {

@@ -7,16 +7,21 @@ import { currentYear } from '@/context/constants'
 const Footer = () => {
   return (
     <footer className="footer">
-      <Container fluid>
-        <Row>
-          <Col xs={12} className="text-center">
-            {currentYear} © Lahomes. Crafted by <IconifyIcon icon="solar:hearts-bold-duotone" className="fs-18 align-middle text-danger" />{' '}
-            <Link href="" className="fw-bold footer-text" target="_blank">
-              Techzaa
-            </Link>
-          </Col>
-        </Row>
-      </Container>
+<Container fluid>
+  <Row>
+    <Col xs={12} className="text-center">
+      {currentYear} © Développé par{' '}
+      <IconifyIcon
+        icon="solar:hearts-bold-duotone"
+        className="fs-18 align-middle text-danger"
+      />{' '}
+      <Link href="#" className="fw-bold footer-text" target="_blank" rel="noopener noreferrer">
+        Maintelia-Technologies
+      </Link>
+    </Col>
+  </Row>
+</Container>
+
     </footer>
   )
 }

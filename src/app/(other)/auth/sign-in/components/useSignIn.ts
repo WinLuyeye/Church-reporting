@@ -40,7 +40,7 @@ const useSignIn = () => {
     }).then((res) => {
       if (res?.ok) {
         push(queryParams['redirectTo'] ?? '/dashboards/analytics')
-        showNotification({ message: 'Successfully logged in. Redirecting....', variant: 'success' })
+        showNotification({ message: 'Connecté avec succès. Redirection en cours...', variant: 'success' })
       } else {
         showNotification({ message: res?.error ?? '', variant: 'danger' })
       }
