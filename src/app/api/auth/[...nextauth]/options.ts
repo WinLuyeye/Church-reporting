@@ -1,21 +1,35 @@
-import type { NextAuthOptions } from 'next-auth'
+import NextAuth, { type NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { randomBytes } from 'crypto'
-import { UserType } from '@/types/auth'
 
-export const fakeUsers: UserType[] = [
-  {
-    id: '1',
-    email: 'user@demo.com',
-    username: 'demo_user',
-    password: '123456',
-    firstName: 'Demo',
-    lastName: 'User',
-    role: 'Admin',
-    token:
-      'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZWNoemFhIiwiYXVkIjoiaHR0cHM6Ly90ZWNoemFhLmdldGFwcHVpLmNvbS8iLCJzdWIiOiJzdXBwb3J0QGNvZGVydGhlbWVzLmNvbSIsImxhc3ROYW1lIjoiVGVjaHphYSIsIkVtYWlsIjoidGVjaHphYXN0dWRpb0BnbWFpbC5jb20iLCJSb2xlIjoiQWRtaW4iLCJmaXJzdE5hbWUiOiJUZXN0VG9rZW4ifQ.ud4LnFZ-mqhHEYiPf2wCLM7KvLGoAxhXTBSymRIZEFLleFkO119AXd8p3OfPCpdUWSyeZl8-pZyElANc_KHj5w',
-  },
-]
+interface MyUser {
+  id: string
+  prenom: string
+  nom: string
+  roles?: string | string[]
+  token: string
+  sexe?: string
+  telephone?: string
+  image?: string
+  createdAt?: string
+  updatedAt?: string
+  email: string
+}
+type SessionUser = {
+  id: string
+  email: string
+  name: string
+  role: string | string[]
+  accessToken: string
+  firstName: string
+  lastName: string
+  sexe?: string
+  telephone?: string
+  image?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export const options: NextAuthOptions = {
   providers: [
@@ -23,47 +37,110 @@ export const options: NextAuthOptions = {
       name: 'credentials',
       credentials: {
         email: {
-          label: 'Email:',
+          label: 'Email',
           type: 'text',
-          placeholder: 'Enter your username',
+          placeholder: 'email@example.com',
         },
         password: {
           label: 'Password',
           type: 'password',
         },
       },
-      async authorize(credentials, req) {
-        const filteredUser = fakeUsers.find((user) => {
-          return user.email === credentials?.email && user.password === credentials?.password
-        })
-        if (filteredUser) {
-          return filteredUser
-        } else {
-          throw new Error('Email or Password is not valid')
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Email and password required')
+        }
+
+        try {
+          const res = await fetch(`${BASE_API_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          })
+
+          console.log('Response status:', res.status)
+          const result = await res.json()
+          console.log('User response:', result)
+
+          if (!res.ok) {
+            throw new Error(result.message || 'Invalid email or password')
+          }
+
+          const user = result.data.connected_user
+          const accessToken = result.data.access_token
+
+          if (user && accessToken) {
+            return {
+              ...user,
+              token: accessToken,
+            }
+          }
+
+          return null
+        } catch (error) {
+          console.error('Authorize error:', error)
+          throw new Error('Erreur lors de la connexion: ' + (error as Error).message)
         }
       },
     }),
   ],
-  secret: 'kvwLrfri/MBznUCofIoRH9+NvGu6GqvVdqO3mor1GuA=',
+
+  secret: process.env.NEXTAUTH_SECRET,
+
   pages: {
     signIn: '/auth/sign-in',
   },
+
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      return true
-    },
-    session: ({ session, token }) => {
-      session.user = {
-        email: 'user@demo.com',
-        name: 'Test User',
+    async jwt({ token, user }) {
+      if (user) {
+        const myUser = user as MyUser
+        token.id = myUser.id
+        token.email = myUser.email
+        token.name = `${myUser.prenom} ${myUser.nom}`
+        token.role = myUser.roles || 'user'
+        token.accessToken = myUser.token
+        token.firstName = myUser.prenom
+        token.lastName = myUser.nom
+        token.sexe = myUser.sexe
+        token.telephone = myUser.telephone
+        token.image = myUser.image
+        token.createdAt = myUser.createdAt
+        token.updatedAt = myUser.updatedAt
       }
-      return Promise.resolve(session)
-    },
+      return token
+    }, // <-- ici
+  
+    async session({ session, token }) {
+      session.user = {
+        id: token.id as string,
+        email: token.email as string,
+        name: token.name as string,
+        role: token.role as string,
+        accessToken: token.accessToken as string,
+        firstName: token.firstName as string,
+        lastName: token.lastName as string,
+        sexe: token.sexe as string,
+        telephone: token.telephone as string,
+        image: token.image as string,
+        createdAt: token.createdAt as string,
+        updatedAt: token.updatedAt as string,
+      } as SessionUser
+      return session
+    }
+    
   },
+  
+
   session: {
-    maxAge: 24 * 60 * 60 * 1000,
-    generateSessionToken: () => {
-      return randomBytes(32).toString('hex')
-    },
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60, // 1 jour
   },
+
+  debug: true,
 }
+
+export default NextAuth(options)

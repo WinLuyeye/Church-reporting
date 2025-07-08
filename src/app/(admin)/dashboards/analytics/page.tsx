@@ -1,8 +1,8 @@
 import PageTitle from '@/components/PageTitle'
 import { Row } from 'react-bootstrap'
-import BalanceCard from './components/BalanceCard'
-import SalesChart from './components/SalesChart'
-import SocialSource from './components/SocialSource'
+// import BalanceCard from './components/BalanceCard'
+// import SalesChart from './components/SalesChart'
+// import SocialSource from './components/SocialSource'
 import Statistics from './components/Statistics'
 import Transaction from './components/Transaction'
 import { Metadata } from 'next'
@@ -15,10 +15,10 @@ const AnalyticsPage = () => {
       <PageTitle title="Analytics" subName="Dashboard" />
       <Statistics />
       <Row>
-        <SalesChart />
-        <BalanceCard />
+        {/* <SalesChart /> */}
+        {/* <BalanceCard /> */}
       </Row>
-      <SocialSource />
+      {/* <SocialSource /> */}
       <Transaction />
     </>
   )

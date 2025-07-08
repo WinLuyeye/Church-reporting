@@ -54,7 +54,8 @@
     "simplebar-react": "^3.2.6",
     "sweetalert2": "^11.22.2",
     "swiper": "^11.1.11",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@iconify/react": "^4.1.1",

@@ -13,7 +13,7 @@ const Transaction = async () => {
         <Card>
           <CardHeader className="d-flex justify-content-between align-items-center">
             <div>
-              <CardTitle as={'h4'}>Latest Transaction</CardTitle>
+              <CardTitle as={'h4'}>Dernier rapport</CardTitle>
             </div>
             <Dropdown>
               <DropdownToggle
@@ -36,10 +36,10 @@ const Transaction = async () => {
                 <thead className="bg-light-subtle">
                   <tr>
                     <th style={{ width: 20 }}>
-                      <div className="form-check">
+                      {/* <div className="form-check">
                         <input type="checkbox" className="form-check-input" id="customCheck1" />
                         <label className="form-check-label" htmlFor="customCheck1" />
-                      </div>
+                      </div> */}
                     </th>
                     <th>Purchase ID</th>
                     <th>Buyer Name</th>
@@ -55,12 +55,12 @@ const Transaction = async () => {
                   {transaction.slice(0, 6).map((item, idx) => (
                     <tr key={idx}>
                       <td>
-                        <div className="form-check">
+                        {/* <div className="form-check">
                           <input type="checkbox" className="form-check-input" id="customCheck2" />
                           <label className="form-check-label" htmlFor="customCheck2">
                             &nbsp;
                           </label>
-                        </div>
+                        </div> */}
                       </td>
                       <td>
                         <Link href="" className="text-dark fw-medium">

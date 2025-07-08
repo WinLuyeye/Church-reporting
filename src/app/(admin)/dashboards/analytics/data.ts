@@ -19,31 +19,32 @@ export type PropertyType = {
 
 export const statisticData: StatisticType[] = [
   {
-    icon: 'solar:buildings-2-broken',
-    title: 'No. of Properties',
+    icon: 'mdi:church', // Bâtiment religieux
+    title: 'Total Membres',
     amount: '2,854',
     change: 7.34,
   },
   {
-    icon: 'solar:users-group-two-rounded-broken',
-    title: 'Regi. Agents',
+    icon: 'mdi:account-group-outline', // Groupe de personnes
+    title: 'Nouveaux Membres',
     amount: '705',
     change: 76.89,
   },
   {
-    icon: 'solar:shield-user-broken',
-    title: 'Customers',
+    icon: 'mdi:hand-heart-outline', // Représente une offrande ou un don
+    title: 'Offrandes',
     amount: '9,431',
     change: 45.0,
     variant: 'danger',
   },
   {
-    icon: 'solar:money-bag-broken',
-    title: 'Revenue',
+    icon: 'mdi:cash-multiple', // Symbole financier pour la dîme
+    title: 'Dîme',
     amount: `${currency}78.3M`,
     change: 8.76,
   },
-]
+];
+
 
 export const propertyData: PropertyType[] = [
   {

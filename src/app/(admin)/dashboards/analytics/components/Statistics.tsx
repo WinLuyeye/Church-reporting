@@ -1,32 +1,42 @@
 'use client'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import ReactApexChart from 'react-apexcharts'
 import { Card, CardBody, Col, Row } from 'react-bootstrap'
-import { chartOptions, statisticData, StatisticType } from '../data'
+import { statisticData, StatisticType } from '../data'
 
 const StatCard = ({ amount, change, icon, title, variant }: StatisticType) => {
   return (
-    <Card>
+    <Card className="mb-3">
       <CardBody>
-        <Row className="align-items-center justify-content-between">
-          <Col xs={6}>
-            <div className="avatar-md bg-light bg-opacity-50 rounded flex-centered">
-              <IconifyIcon width={32} height={32} icon={icon} className="text-primary" />
-            </div>
-            <p className="text-muted mb-2 mt-3">{title}</p>
-            <h3 className="text-dark fw-bold d-flex align-items-center gap-2 mb-0">
+        <div className="d-flex align-items-center gap-3">
+          <div
+            className="d-flex align-items-center justify-content-center rounded-circle"
+            style={{
+              width: 56,
+              height: 56,
+              // backgroundColor: '#e9f0ff',
+            }}
+          >
+            <IconifyIcon
+              icon={icon}
+              width={28}
+              height={28}
+              className="text-primary"
+              style={{ color: '#0d6efd' }} 
+            />
+          </div>
+
+          <div>
+            <p className="text-muted mb-1">{title}</p>
+            <h5 className="text-dark fw-bold d-flex align-items-center gap-2 mb-0">
               {amount}{' '}
               <span
-                className={`badge text-${variant == 'danger' ? 'danger' : 'success'} bg-${variant == 'danger' ? 'danger' : 'success'}-subtle fs-12`}>
-                {variant == 'danger' ? <IconifyIcon icon="ri:arrow-down-line" /> : <IconifyIcon icon="ri:arrow-up-line" />}
+                className={`badge text-${variant === 'danger' ? 'danger' : 'success'} bg-${variant === 'danger' ? 'danger' : 'success'}-subtle fs-12`}>
+                <IconifyIcon icon={variant === 'danger' ? 'ri:arrow-down-line' : 'ri:arrow-up-line'} />
                 {change}%
               </span>
-            </h3>
-          </Col>
-          <Col xs={6}>
-            <ReactApexChart options={chartOptions} series={chartOptions.series} height={95} type="bar" className="apex-charts" />
-          </Col>
-        </Row>
+            </h5>
+          </div>
+        </div>
       </CardBody>
     </Card>
   )

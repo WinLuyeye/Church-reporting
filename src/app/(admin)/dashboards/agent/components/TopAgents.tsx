@@ -16,7 +16,7 @@ const TopAgents = () => {
           <div className="d-flex align-items-center justify-content-between bg-light bg-opacity-25 p-2 mt-2 rounded text-start">
             <div>
               <Link href="" className="text-white fw-medium fs-16">
-              Maintelia Technologies SAS
+              Maintelia Technologies SA
               </Link>
               <p className="mb-0 text-white-50">Markova , USA</p>
               <div className="d-flex flex-wrap gap-2 align-items-center mt-1">

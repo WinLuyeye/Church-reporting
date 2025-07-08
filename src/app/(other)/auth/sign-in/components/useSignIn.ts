@@ -24,8 +24,8 @@ const useSignIn = () => {
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(loginFormSchema),
     defaultValues: {
-      email: 'user@demo.com',
-      password: '123456',
+      email: '',
+      password: '',
     },
   })
 
@@ -42,7 +42,7 @@ const useSignIn = () => {
         push(queryParams['redirectTo'] ?? '/dashboards/analytics')
         showNotification({ message: 'Connecté avec succès. Redirection en cours...', variant: 'success' })
       } else {
-        showNotification({ message: res?.error ?? '', variant: 'danger' })
+        showNotification({ message: 'Adresse mail ou mot de passe incorrect...', variant: 'danger' })
       }
     })
     setLoading(false)
