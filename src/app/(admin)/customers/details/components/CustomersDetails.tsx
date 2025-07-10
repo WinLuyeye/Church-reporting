@@ -12,7 +12,7 @@ const CustomersDetails = () => {
   return (
     <Card>
       <CardBody>
-        <Carousel indicators={false}>
+        {/* <Carousel indicators={false}>
           <CarouselItem className="active">
             <Image src={properties14} height={425} className="d-block w-100 h-100 rounded" alt="img-6" />
             <div className="carousel-caption"></div>
@@ -29,7 +29,7 @@ const CustomersDetails = () => {
             <Image height={425} src={properties15} className="d-block w-100 h-100 rounded" alt="img-5" />
             <div className="carousel-caption"></div>
           </CarouselItem>
-        </Carousel>
+        </Carousel> */}
         <div className="d-flex align-items-center my-3 gap-3">
           <Image src={avatar2} alt="avatar" className="rounded-circle avatar-xl img-thumbnail" />
           <div>
@@ -41,13 +41,13 @@ const CustomersDetails = () => {
         </div>
         <div className="d-flex flex-wrap align-items-start justify-content-between gap-3 mt-3">
           <div>
-            <Button variant="primary">
+            {/* <Button variant="primary">
               <IconifyIcon icon="ri:chat-1-fill" /> Chat Us
-            </Button>
+            </Button> */}
             &nbsp;
-            <Button variant="outline-primary">
+            {/* <Button variant="outline-primary">
               <IconifyIcon icon="ri:phone-fill" /> Phone
-            </Button>
+            </Button> */}
           </div>
           <div className="d-flex gap-1">
             <Button variant="dark" className="avatar-sm d-flex align-items-center justify-content-center fs-20">
@@ -56,12 +56,12 @@ const CustomersDetails = () => {
                 <IconifyIcon icon="ri:edit-fill" />
               </span>
             </Button>
-            <Button variant="primary" className="avatar-sm d-flex align-items-center justify-content-center fs-20">
+            {/* <Button variant="primary" className="avatar-sm d-flex align-items-center justify-content-center fs-20">
               <span>
                 {' '}
                 <IconifyIcon icon="ri:share-fill" />
               </span>
-            </Button>
+            </Button> */}
           </div>
         </div>
         <Row className="my-4">
@@ -85,11 +85,11 @@ const CustomersDetails = () => {
           </Col>
         </Row>
         <Row>
-          <Col lg={4}>
-            <CardTitle as={'h4'} className="mb-2">
+          {/* <Col lg={4}> */}
+            {/* <CardTitle as={'h4'} className="mb-2">
               Social Media :
-            </CardTitle>
-            <ul className="list-inline d-flex gap-1 mb-0 align-items-center mt-3">
+            </CardTitle> */}
+            {/* <ul className="list-inline d-flex gap-1 mb-0 align-items-center mt-3">
               <li className="list-inline-item">
                 <Button variant="soft-primary" className="avatar-sm d-flex align-items-center justify-content-center fs-20">
                   <span>
@@ -130,8 +130,8 @@ const CustomersDetails = () => {
                   </span>
                 </Button>
               </li>
-            </ul>
-          </Col>
+            </ul> */}
+          {/* </Col>
           <Col lg={8}>
             <CardTitle as={'h4'} className="mb-2">
               Preferences :
@@ -143,7 +143,7 @@ const CustomersDetails = () => {
               <IconifyIcon icon="ri:circle-fill" className="fs-10 me-2 text-success" /> Close to public transportation, good school district,
               backyard, modern kitchen
             </p>
-          </Col>
+          </Col> */}
         </Row>
       </CardBody>
     </Card>

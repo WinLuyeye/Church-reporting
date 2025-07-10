@@ -5,16 +5,16 @@ import AddCustomer from './components/AddCustomer'
 import { Col, Row } from 'react-bootstrap'
 import { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Customers Add' }
+export const metadata: Metadata = { title: 'Ajouter un utilisateur' }
 
 const CustomerAddPage = () => {
   return (
     <>
-      <PageTitle title="Customers Add" subName="Real Estate" />
+      <PageTitle title="Ajouter un utilisateur" subName="Real Estate" />
       <Row>
-        <CustomerAddCard />
+        {/* <CustomerAddCard /> */}
         <Col xl={9} lg={12}>
-          <FileUpload title="Add Customer Photo" />
+          {/* <FileUpload title="Add Customer Photo" /> */}
           <AddCustomer />
         </Col>
       </Row>
