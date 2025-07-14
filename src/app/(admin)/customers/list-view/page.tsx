@@ -19,12 +19,13 @@ import {
   Modal,
 } from 'react-bootstrap'
 import { useEffect, useState } from 'react'
-import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
+import { useNotificationContext } from '@/context/useNotificationContext'
+import { useAccessToken } from '@/hooks/useAccessToken'
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -40,24 +41,8 @@ type UserType = {
   image?: string
 }
 
-type SessionUser = {
-  id: string
-  email: string
-  name: string
-  role: string | string[]
-  accessToken: string
-  firstName: string
-  lastName: string
-  sexe?: string
-  telephone?: string
-  image?: string
-  createdAt?: string
-  updatedAt?: string
-}
-
 const CustomersListPage = () => {
-  const { data: session } = useSession()
-  const token = (session?.user as SessionUser)?.accessToken
+  const token = useAccessToken()
 
   const [users, setUsers] = useState<UserType[]>([])
   const [searchQuery, setSearchQuery] = useState('')
@@ -82,7 +67,7 @@ const CustomersListPage = () => {
 
   useEffect(() => {
     fetchUsers()
-  }, [session])
+  }, [token])
 
   const filteredUsers = users.filter((user) => {
     const fullName = `${user.nom} ${user.postnom} ${user.prenom}`.toLowerCase()
@@ -94,6 +79,8 @@ const CustomersListPage = () => {
     setShowModal(true)
   }
 
+  const { showNotification } = useNotificationContext()
+
   const handleConfirmDelete = async () => {
     if (!selectedUser || !token) return
     try {
@@ -103,13 +90,14 @@ const CustomersListPage = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-console.log(":::::::", selectedUser.id);
 
       if (res.ok) {
         setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id))
+        showNotification({ message: 'Utilisateur supprimé avec succès !', variant: 'success' })
       } else {
         const result = await res.json()
         console.error('Erreur de suppression :', result.message)
+        showNotification({ message: "Erreur lors de la suppression de l'utilisateur", variant: 'danger' })
       }
     } catch (error) {
       console.error('Erreur réseau :', error)
@@ -127,7 +115,7 @@ console.log(":::::::", selectedUser.id);
     autoTable(doc, {
       startY: 25,
       head: [['Nom Complet', 'Email', 'Téléphone', 'Sexe', 'Rôle']],
-      body: users.map(u => [
+      body: users.map((u) => [
         `${u.nom} ${u.postnom} ${u.prenom}`,
         u.email,
         u.telephone,
@@ -141,7 +129,7 @@ console.log(":::::::", selectedUser.id);
 
   const exportToExcel = () => {
     const header = ['Nom Complet', 'Email', 'Téléphone', 'Sexe', 'Rôle']
-    const data = users.map(u => [
+    const data = users.map((u) => [
       `${u.nom} ${u.postnom} ${u.prenom}`,
       u.email,
       u.telephone,
@@ -184,7 +172,8 @@ console.log(":::::::", selectedUser.id);
                     as={'a'}
                     className="btn btn-sm btn-outline-light rounded content-none icons-center"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                    aria-expanded="false"
+                  >
                     Export <IconifyIcon className="ms-1" width={16} height={16} icon="ri:arrow-down-s-line" />
                   </DropdownToggle>
                   <DropdownMenu>
@@ -210,14 +199,16 @@ console.log(":::::::", selectedUser.id);
                   </thead>
                   <tbody>
                     {filteredUsers.length > 0 ? (
-                      filteredUsers.map(user => (
+                      filteredUsers.map((user) => (
                         <tr key={user.id}>
                           <td>
                             <div className="d-flex align-items-center gap-2">
                               {user.image && (
                                 <Image src={user.image} alt="avatar" width={40} height={40} className="rounded-circle" />
                               )}
-                              <span>{user.nom} {user.postnom} {user.prenom}</span>
+                              <span>
+                                {user.nom} {user.postnom} {user.prenom}
+                              </span>
                             </div>
                           </td>
                           <td>{user.email}</td>
@@ -255,13 +246,19 @@ console.log(":::::::", selectedUser.id);
               <nav>
                 <ul className="pagination justify-content-end mb-0">
                   <li className="page-item disabled">
-                    <Link className="page-link" href="#">Précédent</Link>
+                    <Link className="page-link" href="#">
+                      Précédent
+                    </Link>
                   </li>
                   <li className="page-item active">
-                    <Link className="page-link" href="#">1</Link>
+                    <Link className="page-link" href="#">
+                      1
+                    </Link>
                   </li>
                   <li className="page-item">
-                    <Link className="page-link" href="#">Suivant</Link>
+                    <Link className="page-link" href="#">
+                      Suivant
+                    </Link>
                   </li>
                 </ul>
               </nav>
@@ -278,13 +275,21 @@ console.log(":::::::", selectedUser.id);
         <Modal.Body>
           {selectedUser && (
             <p>
-              Êtes-vous sûr de vouloir supprimer <strong>{selectedUser.nom} {selectedUser.postnom} {selectedUser.prenom}</strong> ?
+              Êtes-vous sûr de vouloir supprimer{' '}
+              <strong>
+                {selectedUser.nom} {selectedUser.postnom} {selectedUser.prenom}
+              </strong>{' '}
+              ?
             </p>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Annuler</Button>
-          <Button variant="danger" onClick={handleConfirmDelete}>Supprimer</Button>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Annuler
+          </Button>
+          <Button variant="danger" onClick={handleConfirmDelete}>
+            Supprimer
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
