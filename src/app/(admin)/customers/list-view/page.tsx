@@ -27,7 +27,6 @@ import { saveAs } from 'file-saver'
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL
 
-// Définition du type utilisateur selon ta structure
 type UserType = {
   id: string
   nom: string
@@ -39,6 +38,7 @@ type UserType = {
   roles: string | string[]
   image?: string
 }
+
 type SessionUser = {
   id: string
   email: string
@@ -55,12 +55,11 @@ type SessionUser = {
 }
 
 const CustomersListPage = () => {
-  // on typpe useSession pour indiquer que user est de type SessionUser
   const { data: session } = useSession()
   const token = (session?.user as SessionUser)?.accessToken
-  
-  
+
   const [users, setUsers] = useState<UserType[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -93,6 +92,11 @@ const CustomersListPage = () => {
 
     fetchUsers()
   }, [session])
+
+  const filteredUsers = users.filter((user) => {
+    const fullName = `${user.nom} ${user.postnom} ${user.prenom}`.toLowerCase()
+    return fullName.includes(searchQuery.toLowerCase())
+  })
 
   const exportToPDF = () => {
     const doc = new jsPDF()
@@ -130,7 +134,6 @@ const CustomersListPage = () => {
     if (users.length === 0) return
 
     const header = ['Nom Complet', 'Email', 'Numéro de téléphone', 'Sexe', 'Rôle']
-
     const data = users.map(u => [
       `${u.nom} ${u.postnom} ${u.prenom}`,
       u.email,
@@ -204,20 +207,30 @@ const CustomersListPage = () => {
           <Card>
             <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
               <CardTitle as="h4">Liste de tous les utilisateurs</CardTitle>
-              <Dropdown>
-                <DropdownToggle
-                  as={'a'}
-                  className="btn btn-sm btn-outline-light rounded content-none icons-center"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Export <IconifyIcon className="ms-1" width={16} height={16} icon="ri:arrow-down-s-line" />
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem onClick={exportToExcel}>Exporter en Excel</DropdownItem>
-                  <DropdownItem onClick={exportToPDF}>Exporter en PDF</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
+              <div className="d-flex align-items-center gap-3">
+                <input
+                  type="text"
+                  placeholder="Rechercher par nom complet..."
+                  className="form-control form-control-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ maxWidth: '250px' }}
+                />
+                <Dropdown>
+                  <DropdownToggle
+                    as={'a'}
+                    className="btn btn-sm btn-outline-light rounded content-none icons-center"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Export <IconifyIcon className="ms-1" width={16} height={16} icon="ri:arrow-down-s-line" />
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem onClick={exportToExcel}>Exporter en Excel</DropdownItem>
+                    <DropdownItem onClick={exportToPDF}>Exporter en PDF</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
             </CardHeader>
 
             <CardBody className="p-0">
@@ -234,8 +247,8 @@ const CustomersListPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.length > 0 ? (
-                      users.map((user, idx) => (
+                    {filteredUsers.length > 0 ? (
+                      filteredUsers.map((user, idx) => (
                         <tr key={user.id || idx}>
                           <td>
                             <div className="d-flex align-items-center gap-2">
