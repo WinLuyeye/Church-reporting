@@ -110,12 +110,12 @@ export const MENU_ITEMS: MenuItemType[] = [
       //   url: '/customers/grid-view',
       //   parentKey: 'customers',
       // },
-      {
-        key: 'utilisateur-details',
-        label: "Details d'un utilisateur",
-        url: '/customers/details',
-        parentKey: 'customers',
-      },
+      // {
+        // key: 'utilisateur-details',
+        // label: "Details d'un utilisateur",
+        // url: '/customers/details',
+        // parentKey: 'customers',
+      // },
       {
         key: 'add-utilisateur',
         label: 'Ajouter un utilisateur',

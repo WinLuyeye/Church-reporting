@@ -48,6 +48,19 @@ const CustomersListPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [detailedUser, setDetailedUser] = useState<UserType | null>(null)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editUser, setEditUser] = useState<UserType | null>(null)
+  const [editForm, setEditForm] = useState({
+    nom: '',
+    postnom: '',
+    prenom: '',
+    email: '',
+    telephone: '',
+    sexe: '',
+    roles: '',
+  })
 
   const fetchUsers = async () => {
     if (!token) return
@@ -77,6 +90,80 @@ const CustomersListPage = () => {
   const handleDeleteClick = (user: UserType) => {
     setSelectedUser(user)
     setShowModal(true)
+  }
+  const handleEditClick = async (userId: string) => {
+    if (!token) return
+    try {
+      const res = await fetch(`${BASE_API_URL}/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.ok) {
+        const result = await res.json()
+        const user = result.data
+        setEditUser(user)
+        setEditForm({
+          nom: user.nom,
+          postnom: user.postnom,
+          prenom: user.prenom,
+          email: user.email,
+          telephone: user.telephone,
+          sexe: user.sexe,
+          roles: Array.isArray(user.roles) ? user.roles.join(', ') : user.roles,
+        })
+        setShowEditModal(true)
+      } else {
+        showNotification({ message: "Erreur de chargement de l'utilisateur", variant: 'danger' })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleViewDetails = async (userId: string) => {
+    if (!token) return
+    try {
+      const res = await fetch(`${BASE_API_URL}/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (res.ok) {
+        const result = await res.json()
+        setDetailedUser(result.data)
+        setShowDetailsModal(true)
+      } else {
+        const result = await res.json()
+        console.error('Erreur lors de la récupération des détails :', result.message)
+        showNotification({ message: "Impossible d'afficher les détails de l'utilisateur", variant: 'danger' })
+      }
+    } catch (error) {
+      console.error('Erreur réseau :', error)
+    }
+  }
+  const handleUpdateUser = async () => {
+    if (!editUser || !token) return
+    try {
+      const res = await fetch(`${BASE_API_URL}/users/update/${editUser.id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editForm),
+      })
+      if (res.ok) {
+        showNotification({ message: 'Utilisateur mis à jour avec succès !', variant: 'success' })
+        setShowEditModal(false)
+        fetchUsers() // rafraîchir la liste
+      } else {
+        const result = await res.json()
+        console.error(result)
+        showNotification({ message: result.message || 'Erreur lors de la mise à jour', variant: 'danger' })
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const { showNotification } = useNotificationContext()
@@ -172,8 +259,7 @@ const CustomersListPage = () => {
                     as={'a'}
                     className="btn btn-sm btn-outline-light rounded content-none icons-center"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
+                    aria-expanded="false">
                     Export <IconifyIcon className="ms-1" width={16} height={16} icon="ri:arrow-down-s-line" />
                   </DropdownToggle>
                   <DropdownMenu>
@@ -203,9 +289,7 @@ const CustomersListPage = () => {
                         <tr key={user.id}>
                           <td>
                             <div className="d-flex align-items-center gap-2">
-                              {user.image && (
-                                <Image src={user.image} alt="avatar" width={40} height={40} className="rounded-circle" />
-                              )}
+                              {user.image && <Image src={user.image} alt="avatar" width={40} height={40} className="rounded-circle" />}
                               <span>
                                 {user.nom} {user.postnom} {user.prenom}
                               </span>
@@ -217,12 +301,14 @@ const CustomersListPage = () => {
                           <td>{Array.isArray(user.roles) ? user.roles.join(', ') : user.roles}</td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Button variant="light" size="sm">
+                              <Button variant="light" size="sm" onClick={() => handleViewDetails(user.id)}>
                                 <IconifyIcon icon="solar:eye-broken" className="align-middle fs-18" />
                               </Button>
-                              <Button variant="soft-primary" size="sm">
+
+                              <Button variant="soft-primary" size="sm" onClick={() => handleEditClick(user.id)}>
                                 <IconifyIcon icon="solar:pen-2-broken" className="align-middle fs-18" />
                               </Button>
+
                               <Button variant="soft-danger" size="sm" onClick={() => handleDeleteClick(user)}>
                                 <IconifyIcon icon="solar:trash-bin-minimalistic-2-broken" className="align-middle fs-18" />
                               </Button>
@@ -289,6 +375,127 @@ const CustomersListPage = () => {
           </Button>
           <Button variant="danger" onClick={handleConfirmDelete}>
             Supprimer
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Détails de l&apos;utilisateur</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {detailedUser ? (
+            <div>
+              {detailedUser.image && (
+                <div className="text-center mt-3">
+                  <Image src={detailedUser.image} alt="avatar" width={80} height={80} className="rounded-circle" />
+                </div>
+              )}
+              <p>
+                <strong>Nom complet :</strong> {detailedUser.nom} {detailedUser.postnom} {detailedUser.prenom}
+              </p>
+              <p>
+                <strong>Email :</strong> {detailedUser.email}
+              </p>
+              <p>
+                <strong>Téléphone :</strong> {detailedUser.telephone}
+              </p>
+              <p>
+                <strong>Sexe :</strong> {detailedUser.sexe}
+              </p>
+              <p>
+                <strong>Rôle :</strong> {Array.isArray(detailedUser.roles) ? detailedUser.roles.join(', ') : detailedUser.roles}
+              </p>
+            </div>
+          ) : (
+            <p>Chargement des détails...</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+            Fermer
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Modifier l&apos;utilisateur</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {editUser && (
+            <>
+              <div className="mb-2">
+                <label className="form-label">Nom</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={editForm.nom}
+                  onChange={(e) => setEditForm({ ...editForm, nom: e.target.value })}
+                />
+              </div>
+              <div className="mb-2">
+                <label className="form-label">Post-nom</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={editForm.postnom}
+                  onChange={(e) => setEditForm({ ...editForm, postnom: e.target.value })}
+                />
+              </div>
+              <div className="mb-2">
+                <label className="form-label">Prénom</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={editForm.prenom}
+                  onChange={(e) => setEditForm({ ...editForm, prenom: e.target.value })}
+                />
+              </div>
+              <div className="mb-2">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                />
+              </div>
+              <div className="mb-2">
+                <label className="form-label">Téléphone</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={editForm.telephone}
+                  onChange={(e) => setEditForm({ ...editForm, telephone: e.target.value })}
+                />
+              </div>
+              <div className="mb-2">
+                <label className="form-label">Sexe</label>
+                <select className="form-control" value={editForm.sexe} onChange={(e) => setEditForm({ ...editForm, sexe: e.target.value })}>
+                  <option value="">Choisir</option>
+                  <option value="Masculin">Masculin</option>
+                  <option value="Féminin">Féminin</option>
+                </select>
+              </div>
+              <div className="mb-2">
+                <label className="form-label">Rôle</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={editForm.roles}
+                  onChange={(e) => setEditForm({ ...editForm, roles: e.target.value })}
+                />
+              </div>
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Annuler
+          </Button>
+          <Button variant="primary" onClick={handleUpdateUser}>
+            Sauvegarder
           </Button>
         </Modal.Footer>
       </Modal>
