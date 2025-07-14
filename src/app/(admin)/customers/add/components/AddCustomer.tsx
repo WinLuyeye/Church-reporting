@@ -18,8 +18,8 @@ const schema = yup.object({
     .oneOf(['MASCULIN', 'FEMININ'], 'Sexe invalide')
     .required('Veuillez sélectionner le sexe'),
   telephone: yup.string().required('Veuillez entrer le téléphone'),
-  email: yup.string().email('Email invalide').required('Veuillez entrer l\'email'),
-  image: yup.string().url('URL invalide').required('Veuillez entrer l\'URL de l\'image'),
+  email: yup.string().email('Email invalide').required("Veuillez entrer l'email"),
+  image: yup.string().url('URL invalide').required("Veuillez entrer l'URL de l'image"),
   password: yup.string().min(6, 'Mot de passe trop court').required('Veuillez entrer le mot de passe'),
   roles: yup
     .string()
@@ -47,6 +47,7 @@ const AddCustomer = () => {
     handleSubmit,
     control,
     formState: { errors },
+    reset, // <- Ajouté ici
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   })
@@ -58,8 +59,6 @@ const AddCustomer = () => {
       alert('Session invalide ou expirée, veuillez vous reconnecter.')
       return
     }
-
-    console.log('Token envoyé:', session.user.accessToken)
 
     try {
       const res = await fetch(`${BASE_API_URL}/users/create`, {
@@ -74,13 +73,16 @@ const AddCustomer = () => {
       if (!res.ok) {
         const errorData = await res.json()
         console.error('Erreur du serveur:', errorData)
-        showNotification({ message: 'Erreur lors de la création de l\'utilisateur', variant: 'danger' })
+        showNotification({ message: "Erreur lors de la création de l'utilisateur", variant: 'danger' })
         return
       }
 
       const result = await res.json()
       console.log('Utilisateur créé:', result)
       showNotification({ message: 'Utilisateur créé avec succès !', variant: 'success' })
+
+      reset() // <- Réinitialise le formulaire ici
+
     } catch (error) {
       console.error('Erreur réseau:', error)
       showNotification({ message: 'Erreur réseau lors de la création', variant: 'danger' })
@@ -220,6 +222,7 @@ const AddCustomer = () => {
           </Row>
         </CardBody>
       </Card>
+
       <div className="mb-3 rounded">
         <Row className="justify-content-end g-2">
           <Col lg={2}>

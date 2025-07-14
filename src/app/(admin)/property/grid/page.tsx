@@ -11,7 +11,7 @@ const PropertyGridPage = () => {
     <>
       <PageTitle title="Listing Grid" subName="Real Estate" />
       <Row>
-        <PropertiesFilter />
+        {/* <PropertiesFilter /> */}
         <PropertiesData />
       </Row>
     </>

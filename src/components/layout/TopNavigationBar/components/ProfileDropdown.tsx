@@ -1,9 +1,10 @@
 'use client'
 
 import { useSession, signOut } from 'next-auth/react'
-import avatar1 from '@/assets/images/users/avatar-1.jpg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import Image from 'next/image'
+// import Image from 'next/image'
 import Link from 'next/link'
 import {
   Dropdown,
@@ -23,18 +24,18 @@ const ProfileDropdown = () => {
 
   return (
     <Dropdown className="topbar-item" drop="down">
-      <DropdownToggle
-        as={'a'}
-        type="button"
-        className="topbar-button content-none"
-        id="page-header-user-dropdown"
-        data-bs-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false">
-        <span className="d-flex align-items-center">
-          <Image className="rounded-circle" width={32} src={avatar1} alt="avatar" />
-        </span>
-      </DropdownToggle>
+<DropdownToggle
+  as={'a'}
+  type="button"
+  className="topbar-button content-none"
+  id="page-header-user-dropdown"
+  data-bs-toggle="dropdown"
+  aria-haspopup="true"
+  aria-expanded="false">
+  <span className="d-flex align-items-center">
+    <FontAwesomeIcon icon={faUserCircle} size="lg" />
+  </span>
+</DropdownToggle>
 
       <DropdownMenu className="dropdown-menu-end">
         <DropdownHeader as={'h6'} className="dropdown-header">
