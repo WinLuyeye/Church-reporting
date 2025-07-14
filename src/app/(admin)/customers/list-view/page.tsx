@@ -39,8 +39,6 @@ type UserType = {
   roles: string | string[]
   image?: string
 }
-
-// Typage de session.user correspondant à ton hook NextAuth
 type SessionUser = {
   id: string
   email: string
@@ -59,12 +57,14 @@ type SessionUser = {
 const CustomersListPage = () => {
   // on typpe useSession pour indiquer que user est de type SessionUser
   const { data: session } = useSession()
-  const token = session?.user?.accessToken  
+  const token = (session?.user as SessionUser)?.accessToken
+  
+  
   const [users, setUsers] = useState<UserType[]>([])
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const token = session?.user?.accessToken
+      const token = (session?.user as SessionUser | undefined)?.accessToken
 
       if (!token) {
         console.warn('Token invalide ou manquant.')
