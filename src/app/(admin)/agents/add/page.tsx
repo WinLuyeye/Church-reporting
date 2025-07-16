@@ -5,18 +5,18 @@ import AgentAdd from './components/AgentAdd'
 import AgentAddCard from './components/AgentAddCard'
 import { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Add Agent' }
+export const metadata: Metadata = { title: 'Ajouter une extension' }
 
 const AgentAddPage = () => {
   return (
     <>
-      <PageTitle subName="Real Estate" title="Add Agent" />
+      <PageTitle subName="Extensions" title="Ajouter une extension" />
       <Row>
-        <AgentAddCard />
-        <Col xl={9} lg={8}>
-          <FileUpload title="Add Agent Photo" />
+        {/* <AgentAddCard /> */}
+        {/* <Col xl={9} lg={8}> */}
+          {/* <FileUpload title="Add Agent Photo" /> */}
           <AgentAdd />
-        </Col>
+        {/* </Col> */}
       </Row>
     </>
   )
